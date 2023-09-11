@@ -2,10 +2,10 @@ package com.vbcodes.schooltransport.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbcodes.schooltransport.entity.Organization;
@@ -13,7 +13,7 @@ import com.vbcodes.schooltransport.service.OrgService;
 
 @RestController
 public class OrgController {
-    private static final Logger logger = LoggerFactory.getLogger(OrgController.class);
+    // private static final Logger logger = LoggerFactory.getLogger(OrgController.class);
     private OrgService orgService;
 
     @Autowired
@@ -26,12 +26,14 @@ public class OrgController {
         return orgService.getAllOrganizations();
     }
 
-    @GetMapping("/organizations/id")
-    public Organization getOrganizationById(){ 
-        logger.info("Inside get method before function call");
-        Organization org = orgService.getOrganizationById(2).orElse(null);
-        if(org==null) System.out.println("Org is coming null");
-        else System.out.println(org);
+    @GetMapping("/organizations/{id}")
+    public Organization getOrganizationById(@PathVariable int id){ 
+        Organization org = orgService.getOrganizationById(id).orElse(null);        
         return org;
+    }
+
+    @DeleteMapping("/organization/{id}")
+    public void deleteOrganizationById(@PathVariable int id){
+        orgService.deleteOrganizationById(id);
     }
 }

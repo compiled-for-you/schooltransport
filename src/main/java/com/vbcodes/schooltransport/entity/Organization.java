@@ -1,4 +1,5 @@
 package com.vbcodes.schooltransport.entity;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +26,19 @@ public class Organization {
     @Enumerated(EnumType.STRING)
     @Column(name = "org_type", nullable = false)
     private OrgType orgType;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
+    private AppUser appUser;
+
+    public Organization(){}
+    public Organization(String orgName, String ownerName, String address, String contactNumber, OrgType orgType) {
+        this.orgName = orgName;
+        this.ownerName = ownerName;
+        this.address = address;
+        this.contactNumber = contactNumber;
+        this.orgType = orgType;
+    }
 
     public Integer getOrgId() {
         return orgId;
@@ -74,10 +88,18 @@ public class Organization {
         this.orgType = orgType;
     }
 
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser){
+        this.appUser = appUser;
+    }
+    
     @Override
     public String toString() {
         return "Organization [orgId=" + orgId + ", orgName=" + orgName + ", ownerName=" + ownerName + ", address="
-                + address + ", contactNumber=" + contactNumber + ", orgType=" + orgType + "]";
+                + address + ", contactNumber=" + contactNumber + ", orgType=" + orgType + "] "+ appUser.toString();
     }
 }
 

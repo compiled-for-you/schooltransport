@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class CheckController {
 
-    @GetMapping("/check1")
-    public String checkConnections(){
-        return "home";
-    }
+    // @GetMapping("/login")
+    // public String checkConnections(){
+    //     return "home";
+    // }
 
     @GetMapping("/check")
-    @ResponseBody
     public String check(){
-        return "homesf";
+        return "home";
     }
 
     @GetMapping("/getData")

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbcodes.schooltransport.entity.Student;
@@ -20,11 +21,21 @@ public class StudentController {
 
     @GetMapping("/students")
     public List<Student> getAllStudents(){
-        List<Student> list=  studentService.getAllStudents();
-        System.out.println("THe number of students are " + list.size());
-        for(Student s : list){
-            System.out.println(s);
-        }
-        return list;
+        return studentService.getAllStudents();  
+    }
+
+    @GetMapping("/organizations/{orgId}/students")
+    public List<Student> getAllStudentsFromOrganization(@PathVariable int orgId){
+        return studentService.getAllStudentsFromOrganization(orgId);
+    }
+
+    @GetMapping("student/name/{studentName}")
+    public Student getStudentByName(@PathVariable String studentName){
+        return studentService.getStudentByName(studentName);
+    }
+
+    @GetMapping("students/grade/{grade}")
+    public List<Student> getStudentsByGrade(@PathVariable int grade){
+        return studentService.getStudentsByGrade(grade);
     }
 }

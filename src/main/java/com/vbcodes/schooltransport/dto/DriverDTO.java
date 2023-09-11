@@ -1,43 +1,16 @@
-package com.vbcodes.schooltransport.entity;
+package com.vbcodes.schooltransport.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.vbcodes.schooltransport.entity.AppUser;
+import com.vbcodes.schooltransport.entity.Vehicle;
 
-@Entity
-@Table(name = "drivers")
-public class Driver {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "driver_id")
+public class DriverDTO extends AppUserDTO{
+        
     private int driverId;
-
-    @Column(name = "full_name", nullable = false, length = 100)
     private String driverName;
-
-    @Column(name = "license_number", nullable = false, length = 50)
     private String licenseNumber;
-
-    @Column(name = "contact_number", nullable = false, length = 20)
-    private String contactNumber; 
-
-    @Column(nullable = false, length = 200)
+    private String contactNumber;
     private String address;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name ="vehicle_id", referencedColumnName = "vehicle_id")
     private Vehicle vehicle;
-
-    @OneToOne
-    // @JsonIgnore
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private AppUser appUser;
 
     public int getDriverId() {
@@ -96,6 +69,5 @@ public class Driver {
     public String toString() {
         return "Driver [driverId=" + driverId + ", driverName=" + driverName + ", licenseNumber=" + licenseNumber
                 + ", contactNumber=" + contactNumber + ", address=" + address + ", vehicle=" + vehicle + "]";
-    }
-
+    }    
 }

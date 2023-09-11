@@ -35,7 +35,7 @@ public class Vehicle {
     private int capacity;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "organization_id", referencedColumnName = "org_id")
+    @JoinColumn(name = "organization_id", referencedColumnName = "org_id") 
     private Organization organization;
 
     public int getVehicleId() {
@@ -91,7 +91,5 @@ public class Vehicle {
         return "Vehicle [vehicleId=" + vehicleId + ", vehicleType=" + vehicleType + ", vehicleNumber=" + vehicleNumber
                 + ", vehicleRegistrationNumber=" + vehicleRegistrationNumber + ", capacity=" + capacity
                 + ", organization=" + organization + "]";
-    }
-
-    
+    }   
 }

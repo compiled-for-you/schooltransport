@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +26,10 @@ public class Parent {
 
     @Column(nullable = false, length = 20)
     private String contact;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private AppUser appUser;
 
     public int getParentId() {
         return parentId;
@@ -55,6 +61,10 @@ public class Parent {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
     }
 
     @Override

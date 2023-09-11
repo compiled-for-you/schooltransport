@@ -1,5 +1,7 @@
 package com.vbcodes.schooltransport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,7 +33,12 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", referencedColumnName = "org_id")
+    @JsonIgnore
     private Organization organization;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private AppUser appUser;
 
     public int getStudentId() {
         return studentId;
@@ -70,6 +78,10 @@ public class Student {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+    
+    public AppUser getAppUser() {
+        return appUser;
     }
     
     @Override
