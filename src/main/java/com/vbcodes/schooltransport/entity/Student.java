@@ -36,8 +36,12 @@ public class Student {
     @JsonIgnore
     private Organization organization;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id", referencedColumnName = "parent_id")
+    private Parent parent;
+
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
 
     public int getStudentId() {
@@ -80,16 +84,26 @@ public class Student {
         this.organization = organization;
     }
     
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
     public AppUser getAppUser() {
         return appUser;
     }
     
-    @Override
-    public String toString() {
-        return "Student [studentId=" + studentId + ", studentName=" + studentName + ", address=" + address + ", grade="
-                + grade + ", organization=" + organization + "]";
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
     }
 
     
-
+    @Override
+    public String toString() {
+        return "Student [studentId=" + studentId + ", studentName=" + studentName + ", address=" + address + ", grade="
+                + grade + ", organization=" + organization + ", parent=" + parent + "]";
+    }
 }

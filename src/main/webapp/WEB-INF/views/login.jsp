@@ -43,16 +43,16 @@ rel="stylesheet"
                 class="img-fluid" alt="Phone image">
             </div>
             <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-              <form>
+              <form action="/login" method="post">
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                  <input type="email" id="form1Example13" class="form-control form-control-lg" />
+                  <input type="text" id="username" name="username" class="form-control form-control-lg" />
                   <label class="form-label" for="form1Example13">Email address</label>
                 </div>
       
                 <!-- Password input -->
                 <div class="form-outline mb-4">
-                  <input type="password" id="form1Example23" class="form-control form-control-lg" />
+                  <input type="password" id="password" name="password" class="form-control form-control-lg" />
                   <label class="form-label" for="form1Example23">Password</label>
                 </div>
       
@@ -73,43 +73,41 @@ rel="stylesheet"
                 </div>
       
                 <div class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998"
-                  role="button" id="fb">
-                  <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
-              </div>
-                <div class="btn btn-primary btn-lg btn-block" style="background-color: #55acee"
+                  role="button" id="register">
+                  <i class="fab me-2"></i>Register As A New User
+                </div>
+                <!-- <div class="btn btn-primary btn-lg btn-block" style="background-color: #55acee"
                   role="button" id="twitter">
-                  <i class="fab fa-twitter me-2"></i>Continue with Twitter</div>
+                  <i class="fab fa-twitter me-2"></i>Continue with Twitter</div> -->
       
               </form>
             </div>
           </div>
-          <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-            <!-- Copyright -->
-            <div class="text-white mb-3 mb-md-0">
-              Copyright © 2023. All rights reserved.
-            </div>
-            <!-- Copyright -->
-        
-            <!-- Right -->
-            <div>
-              <a href="#!" class="text-white me-4">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-              <a href="#!" class="text-white me-4">
-                <i class="fab fa-twitter"></i>
-              </a>
-              <a href="#!" class="text-white me-4">
-                <i class="fab fa-google"></i>
-              </a>
-              <a href="#!" class="text-white">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-            </div>
-            <!-- Right -->
-          </div>
         </div>
-        
-  
+        <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+          <!-- Copyright -->
+          <div class="text-white mb-3 mb-md-0">
+            Copyright © 2023. All rights reserved.
+          </div>
+          <!-- Copyright -->
+      
+          <!-- Right -->
+          <div>
+            <a href="#!" class="text-white me-4">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#!" class="text-white me-4">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#!" class="text-white me-4">
+              <i class="fab fa-google"></i>
+            </a>
+            <a href="#!" class="text-white">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+          <!-- Right -->
+        </div>
       </section>
     <!--page code end-->
     <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -117,6 +115,6 @@ rel="stylesheet"
     <!-- MDB -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
-    <script src="/js/home.js"></script>
+    <script src="/js/login.js"></script>
   </body>
 </html>

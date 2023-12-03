@@ -12,9 +12,9 @@ public class CheckController {
     //     return "home";
     // }
 
-    @GetMapping("/check")
+    @GetMapping("/login")
     public String check(){
-        return "home";
+        return "login";
     }
 
     @GetMapping("/getData")

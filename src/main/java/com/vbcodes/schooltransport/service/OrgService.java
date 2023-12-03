@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vbcodes.schooltransport.dto.OrganizationDTO;
@@ -15,17 +14,13 @@ import com.vbcodes.schooltransport.repository.OrgRepository;
 
 @Service
 public class OrgService {
-    private OrgRepository orgRepository;
-    private AppUserService appUserService;
+    private OrgRepository orgRepository;    
     private ModelMapper modelMapper;    
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public OrgService(OrgRepository orgRepository, ModelMapper modelMapper, AppUserService appUserService, PasswordEncoder passwordEncoder) {
+    public OrgService(OrgRepository orgRepository, ModelMapper modelMapper) {
         this.orgRepository = orgRepository;
-        this.appUserService=appUserService;
         this.modelMapper = modelMapper;
-        this.passwordEncoder=passwordEncoder;
     }
 
     public Optional<Organization> getOrganizationById(int id){
@@ -36,12 +31,13 @@ public class OrgService {
         return orgRepository.findAll();
     }
 
-    public void saveNewOrganization(OrganizationDTO orgDTO){
-        AppUser orgAppUser = appUserService.saveAppUser(new AppUser(orgDTO.getUsername(), passwordEncoder.encode(orgDTO.getPassword()), orgDTO.getRoles()));
-        System.out.println(orgAppUser);
+    public Organization getOrganizationByUserId(int userId){
+        return orgRepository.findOrganizationByUserId(userId);
+    }
+    
+    public void saveNewOrganization(OrganizationDTO orgDTO, AppUser orgAppUser){
         Organization orgEntity = mapFromDTOToEntity(orgDTO);
         orgEntity.setAppUser(orgAppUser);
-        System.out.println(orgEntity);
         orgRepository.save(orgEntity);
     }
 

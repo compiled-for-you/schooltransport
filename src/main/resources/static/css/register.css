@@ -1,0 +1,31 @@
+.icon-container {
+    display: flex;
+    justify-content: space-around; /* Adjust as needed: space-between, space-evenly, etc. */
+    margin-bottom: 20px;
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex: 1; /* Distribute space equally among icons */
+}
+
+.icon i {
+    font-size: 30px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.icon i:hover {
+    color: #3b5998;
+    border: 2px solid #55acee;
+}
+
+.icon.selected i{
+    color: #3b5998;
+    border: 2px solid #55acee;
+}

@@ -1,5 +1,7 @@
 package com.vbcodes.schooltransport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,8 +39,13 @@ public class Driver {
 
     @OneToOne
     // @JsonIgnore
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id", referencedColumnName = "org_id") 
+    @JsonIgnore
+    private Organization organization;
 
     public int getDriverId() {
         return driverId;
@@ -88,8 +95,20 @@ public class Driver {
         this.vehicle = vehicle;
     }
 
+    public void setOrganization(Organization organization){
+        this.organization=organization;
+    }
+
+    public Organization geOrganization(){
+        return organization;
+    }
+
     public AppUser getAppUser() {
         return appUser;
+    }
+
+    public void setAppUser(AppUser appUser){
+        this.appUser = appUser;
     }
     
     @Override

@@ -28,7 +28,7 @@ public class Parent {
     private String contact;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
 
     public int getParentId() {
@@ -63,6 +63,9 @@ public class Parent {
         this.contact = contact;
     }
 
+    public void setAppUser(AppUser appUser){
+        this.appUser=appUser;
+    }
     public AppUser getAppUser() {
         return appUser;
     }
