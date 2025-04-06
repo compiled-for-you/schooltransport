@@ -28,7 +28,7 @@ public class ProjectSecurtiyConfiguration {
                                 // ,antMatcher("/WEB-INF/views/**") // not needed as allowing redirects as stated above!
                                 .anyRequest().authenticated())
             .formLogin(login -> 
-                login.loginPage("/login").permitAll());
+                login.loginPage("/login").defaultSuccessUrl("/home", true).permitAll());
             // .formLogin(Customizer.withDefaults());
             // .httpBasic(Customizer.withDefaults());
 

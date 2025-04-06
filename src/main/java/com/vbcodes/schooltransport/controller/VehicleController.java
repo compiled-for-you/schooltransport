@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,13 +41,7 @@ public class VehicleController {
 
     @PostMapping("/vehicles/add")
     public void addNewVehicle(@RequestBody VehicleDTO vehicleDTO, Authentication auth){
-        //TODO get the current logged in organization
-        UserDetails userDetails = (UserDetails)auth.getPrincipal();
-        System.out.println(userDetails.getUsername());
-        Integer currentUserId = appUserService.getAppUserIdByUsername(userDetails.getUsername());
-        System.out.println(currentUserId);
-        //TODO get the currentOrg by userId
-        Organization currentOrganization = orgService.getOrganizationByUserId(currentUserId);
+        Organization currentOrganization = orgService.getCurrentLoggedInOrganization(auth);
         System.out.println(currentOrganization);
         if(currentOrganization!=null)
             vehicleService.addNewVehicle(vehicleDTO, currentOrganization);
