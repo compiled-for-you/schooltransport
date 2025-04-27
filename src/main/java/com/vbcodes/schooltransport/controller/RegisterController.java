@@ -3,12 +3,10 @@ package com.vbcodes.schooltransport.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vbcodes.schooltransport.dto.DriverDTO;
 import com.vbcodes.schooltransport.dto.OrganizationDTO;
@@ -24,9 +22,8 @@ import com.vbcodes.schooltransport.service.OrgService;
 import com.vbcodes.schooltransport.service.ParentService;
 import com.vbcodes.schooltransport.service.StudentService;
 
-@Controller
+@RestController
 @RequestMapping("/register")
-// @Transactional
 public class RegisterController {
 
     private OrgService orgService;
@@ -44,18 +41,7 @@ public class RegisterController {
         this.appUserService=appUserService;
     }
 
-    @GetMapping("/new_user")
-    private String registerNewUser(){
-        return "register";
-    }
-
-    @GetMapping("/organization")
-    private void registerOrganization(){
-        System.out.println("orgDTO");
-    }
-
     @PostMapping("/organization")
-    @ResponseBody
     private ResponseEntity<Object> registerOrganization(@RequestBody OrganizationDTO orgDTO){
         System.out.println(orgDTO);
         try{
@@ -70,13 +56,7 @@ public class RegisterController {
         }
     }
 
-    @GetMapping("/driver")
-    private void registerDriver(){
-        System.out.println("orgDTO");
-    }
-
     @PostMapping("/driver")
-    @ResponseBody
     private ResponseEntity<Object> registerDriver(@RequestBody DriverDTO driverDTO){
         System.out.println(driverDTO);
         try{
@@ -99,13 +79,7 @@ public class RegisterController {
         }
     }
 
-    @GetMapping("/student")
-    private String registerStudent(){
-        return "studentparentform";
-    }
-
     @PostMapping("/student")
-    @ResponseBody
     private ResponseEntity<Object> registerStudent(@RequestBody StudentParentFormDTO studentParentFormDTO){
         System.out.println(studentParentFormDTO);
         try{

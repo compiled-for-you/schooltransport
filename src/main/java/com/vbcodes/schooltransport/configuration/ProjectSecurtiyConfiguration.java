@@ -3,6 +3,9 @@ package com.vbcodes.schooltransport.configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,27 +13,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import jakarta.servlet.DispatcherType;
-
 @Configuration
 public class ProjectSecurtiyConfiguration {
-    
+
     @Bean
-    SecurityFilterChain projectSecurityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception{
+    SecurityFilterChain projectSecurityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
-            .csrf(c -> c.disable())
-            .authorizeHttpRequests(authorize -> authorize
-                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() //this line allows Spring Security all redirects, apparently any request routing from a controller to a jsp is also a redirect to the WEB-INF directory, so now it works!
-                .requestMatchers(mvc.pattern("/getData")).permitAll()
-                .requestMatchers(mvc.pattern("/register/**"), mvc.pattern("/js/**"), mvc.pattern("/css/**")).permitAll()
-                .requestMatchers(mvc.pattern("/organizations")).permitAll() //hasAuthority("organization")
-                                // ,antMatcher("/students")
-                                // ,antMatcher("/WEB-INF/views/**") // not needed as allowing redirects as stated above!
-                                .anyRequest().authenticated())
-            .formLogin(login -> 
-                login.loginPage("/login").defaultSuccessUrl("/home", true).permitAll());
-            // .formLogin(Customizer.withDefaults());
-            // .httpBasic(Customizer.withDefaults());
+                .csrf(c -> c.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(mvc.pattern("/getData")).permitAll()
+                        .requestMatchers(mvc.pattern("/login")).permitAll()
+                        .requestMatchers(mvc.pattern("/register/**")).permitAll()
+                        .requestMatchers(mvc.pattern("/organizations")).hasRole("organization")
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
@@ -41,12 +37,17 @@ public class ProjectSecurtiyConfiguration {
     }
 
     @Bean
-    public ModelMapper modelMapper(){
+    public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }

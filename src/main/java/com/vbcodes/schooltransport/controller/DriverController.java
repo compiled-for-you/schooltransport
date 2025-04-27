@@ -2,6 +2,8 @@ package com.vbcodes.schooltransport.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.vbcodes.schooltransport.service.DriverService;
@@ -17,7 +19,10 @@ public class DriverController {
     }
 
     @GetMapping("/drivers")
-    public List<Driver> getAllDrivers(){
+    public List<Driver> getAllDrivers(Authentication auth, User user){
+        System.out.println("Inside DriverController.getAllDrivers()");
+        auth.getPrincipal();
+        user.getAuthorities();
         return driverService.getAllDrivers();
     } 
 }
