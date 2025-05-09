@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbcodes.schooltransport.dto.VehicleDTO;
@@ -17,6 +18,7 @@ import com.vbcodes.schooltransport.service.OrgService;
 import com.vbcodes.schooltransport.service.VehicleService;
 
 @RestController
+@RequestMapping("/vehicles")
 public class VehicleController {
     private VehicleService vehicleService;
     private OrgService orgService;
@@ -29,21 +31,19 @@ public class VehicleController {
         this.appUserService=appUserService;
     }
 
-    @GetMapping("/vehicles")
-    public List<Vehicle> getAllVehicles(){
+    @GetMapping("/all")
+    public List<Vehicle> getAllVehicles(Authentication auth){
+        
         return vehicleService.getAllVehicles();
     }
 
-    @GetMapping("/vehicles/add")
-    public String addNewVehicle(){
-        return "addvehicleform";
-    }
-
-    @PostMapping("/vehicles/add")
+    @PostMapping("/add")
     public void addNewVehicle(@RequestBody VehicleDTO vehicleDTO, Authentication auth){
         Organization currentOrganization = orgService.getCurrentLoggedInOrganization(auth);
         System.out.println(currentOrganization);
         if(currentOrganization!=null)
             vehicleService.addNewVehicle(vehicleDTO, currentOrganization);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.vbcodes.schooltransport.configuration;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,23 +11,39 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import com.vbcodes.schooltransport.jwt.AuthEntryPointJWT;
+import com.vbcodes.schooltransport.jwt.CustomJWTFilter;
 
 @Configuration
 public class ProjectSecurtiyConfiguration {
 
+    @Autowired
+    private AuthEntryPointJWT unauthorizedHandler;
+
+    @Bean
+    public CustomJWTFilter authenticationJwtTokenFilter() {
+        return new CustomJWTFilter();
+    }
+
     @Bean
     SecurityFilterChain projectSecurityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
-                .csrf(c -> c.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(mvc.pattern("/getData")).permitAll()
-                        .requestMatchers(mvc.pattern("/login")).permitAll()
-                        .requestMatchers(mvc.pattern("/register/**")).permitAll()
-                        .requestMatchers(mvc.pattern("/organizations")).hasRole("organization")
-                        .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
+            .csrf(c -> c.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(mvc.pattern("/getData")).permitAll()
+                    .requestMatchers(mvc.pattern("/login")).permitAll()
+                    .requestMatchers(mvc.pattern("/register/**")).permitAll()
+                    // .requestMatchers(mvc.pattern("/organizations/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/drivers/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/vehicles/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/parents/**")).permitAll()
+                    .anyRequest().authenticated())
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+            .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

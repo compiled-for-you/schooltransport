@@ -26,7 +26,7 @@ public class StudentController {
 
     @GetMapping("/students")
     public List<Student> getAllStudents(){
-        return studentService.getAllStudents();  
+        return studentService.getAllStudents();
     }
 
     @GetMapping("/organization/students")
@@ -35,7 +35,7 @@ public class StudentController {
         System.out.println(currentOrganization);
         if(currentOrganization==null)
             return null;
-        else 
+        else
             return studentService.getAllStudentsFromOrganization(currentOrganization.getOrgId());
     }
 
