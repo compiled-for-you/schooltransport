@@ -23,8 +23,6 @@ public class DriverController {
     @GetMapping("/all")
     public List<Driver> getAllDrivers(Authentication auth, User user){
         System.out.println("Inside DriverController.getAllDrivers()");
-        auth.getPrincipal();
-        user.getAuthorities();
         return driverService.getAllDrivers();
     } 
 }

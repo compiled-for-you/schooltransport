@@ -37,6 +37,10 @@ public class CustomJWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         logger.debug("CustomJWTFilter called for URI: {}", request.getRequestURI());
+        String requestMethod = request.getMethod();
+        if(requestMethod.equalsIgnoreCase("OPTIONS")) {
+            filterChain.doFilter(request, response);
+        }
         try {
             String jwt = jwtUtils.getJWTFromHeader(request);
 

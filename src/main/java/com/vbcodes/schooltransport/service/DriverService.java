@@ -43,6 +43,10 @@ public class DriverService {
         return this.getDriverByUserId(currentUserId);
     }
 
+    public Driver getDriverByAppUser(AppUser appUser) {
+        return driverRepository.findDriverByAppUser(appUser);
+    }
+    
     private Driver getDriverByUserId(Integer currentUserId) {
         return driverRepository.findDriverByUserId(currentUserId);
     }

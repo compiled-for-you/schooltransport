@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,14 @@ public class AppUserService {
 
     public AppUser getAppUserByUsername(String username){
         return appUserRepository.findByUsername(username);
+    }
+
+    public Optional<AppUser> getCurrentLoggedInUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(username==null || username.isEmpty()){
+            return Optional.empty();
+        }
+        return Optional.of(appUserRepository.findByUsername(username));
     }
 
     public Integer getAppUserIdByUsername(String username){

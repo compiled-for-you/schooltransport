@@ -1,9 +1,7 @@
 package com.vbcodes.schooltransport.controller;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vbcodes.schooltransport.entity.Organization;
 import com.vbcodes.schooltransport.responses.ErrorResponse;
-import com.vbcodes.schooltransport.responses.SuccessResponse;
 import com.vbcodes.schooltransport.service.OrgService;
 
 @RestController

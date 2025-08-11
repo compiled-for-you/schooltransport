@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -31,14 +32,17 @@ public class ProjectSecurtiyConfiguration {
     @Bean
     SecurityFilterChain projectSecurityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
+            .cors(Customizer.withDefaults())
             .csrf(c -> c.disable())
             .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**")).permitAll() // Allow pre-flight requests, necessary when we add Authorization header from the client for JWT
                     .requestMatchers(mvc.pattern("/getData")).permitAll()
                     .requestMatchers(mvc.pattern("/login")).permitAll()
                     .requestMatchers(mvc.pattern("/register/**")).permitAll()
-                    // .requestMatchers(mvc.pattern("/organizations/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/organizations/**")).permitAll()
                     .requestMatchers(mvc.pattern("/drivers/**")).permitAll()
                     .requestMatchers(mvc.pattern("/vehicles/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/vehicles/add")).hasRole("ORGANIZATION")
                     .requestMatchers(mvc.pattern("/parents/**")).permitAll()
                     .anyRequest().authenticated())
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))

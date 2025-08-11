@@ -30,7 +30,8 @@ public class OrgService {
     public Organization getCurrentLoggedInOrganization(Authentication auth){
         UserDetails userDetails = (UserDetails)auth.getPrincipal();
         Integer currentUserId = appUserService.getAppUserIdByUsername(userDetails.getUsername());
-        return this.getOrganizationByUserId(currentUserId);
+        // return this.getOrganizationByUserId(currentUserId);
+        return null;
     }
 
     public Optional<Organization> getOrganizationById(int id){
@@ -41,8 +42,8 @@ public class OrgService {
         return orgRepository.findAll();
     }
 
-    public Organization getOrganizationByUserId(int userId){
-        return orgRepository.findOrganizationByUserId(userId);
+    public Organization getOrganizationByAppUser(AppUser appUser){
+        return orgRepository.findOrganizationByAppUser(appUser);
     }
     
     public void saveNewOrganization(OrganizationDTO orgDTO, AppUser orgAppUser){
