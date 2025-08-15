@@ -53,9 +53,7 @@ public class VehicleService {
             case "ROLE_DRIVER":
                 logger.error("User Type: " + userType);
                 Driver currentDriver = driverService.getDriverByAppUser(appUser.get());
-                if(currentDriver.getVehicle() != null){
-                    allVehicles.add(currentDriver.getVehicle());
-                }
+                //TODO check if the driver has a vehicle assigned in the mappings table (to be created) then return the vehicle
             break;
             //TODO if parent, return all vehicles assigned to the students of this parent
             //check the students enrollment table in this case

@@ -12,7 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.ToString;
 
+@Data
 @Entity
 @Table(name = "drivers")
 public class Driver {
@@ -34,88 +37,16 @@ public class Driver {
     @Column(nullable = false, length = 200)
     private String address;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name ="vehicle_id", referencedColumnName = "vehicle_id")
-    private Vehicle vehicle;
-
-    @OneToOne
-    // @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", referencedColumnName = "org_id") 
     @JsonIgnore
+    @ToString.Exclude
     private Organization organization;
-
-    public int getDriverId() {
-        return driverId;
-    }
-
-    public void setDriverId(int driverId) {
-        this.driverId = driverId;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
-    }
-
-    public String getLicenseNumber() {
-        return licenseNumber;
-    }
-
-    public void setLicenseNumber(String licenseNumber) {
-        this.licenseNumber = licenseNumber;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public void setOrganization(Organization organization){
-        this.organization=organization;
-    }
-
-    public Organization geOrganization(){
-        return organization;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser){
-        this.appUser = appUser;
-    }
-    
-    @Override
-    public String toString() {
-        return "Driver [driverId=" + driverId + ", driverName=" + driverName + ", licenseNumber=" + licenseNumber
-                + ", contactNumber=" + contactNumber + ", address=" + address + ", vehicle=" + vehicle + "]";
-    }
 
 }
