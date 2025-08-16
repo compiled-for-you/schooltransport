@@ -2,20 +2,21 @@ package com.vbcodes.schooltransport.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.vbcodes.schooltransport.dto.VehicleDTO;
 import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Driver;
 import com.vbcodes.schooltransport.entity.Organization;
 import com.vbcodes.schooltransport.entity.Vehicle;
+import com.vbcodes.schooltransport.exception.customexceptions.IllegalVehicleAccessException;
+import com.vbcodes.schooltransport.exception.customexceptions.VehicleNotFoundException;
 import com.vbcodes.schooltransport.repository.VehicleRepository;
+import com.vbcodes.schooltransport.utils.CurrentUserUtil;
 
 @Service
 public class VehicleService {
@@ -23,64 +24,94 @@ public class VehicleService {
     private static final Logger logger = LoggerFactory.getLogger(VehicleService.class);
     private VehicleRepository vehicleRepository;
     private ModelMapper modelMapper;
-    private AppUserService appUserService;
     private OrgService orgService;
     private DriverService driverService;
 
     @Autowired
-    public VehicleService(VehicleRepository vehicleRepository, ModelMapper modelMapper, AppUserService appUserService, OrgService orgService, DriverService driverService) {
+    public VehicleService(VehicleRepository vehicleRepository, ModelMapper modelMapper, OrgService orgService, DriverService driverService) {
         this.driverService = driverService;
         this.orgService = orgService;
-        this.appUserService = appUserService;
         this.vehicleRepository=vehicleRepository;
         this.modelMapper=modelMapper;
     }
 
-    public List<Vehicle> getAllVehicles(){
-        Optional<AppUser> appUser = appUserService.getCurrentLoggedInUser();
-        String userType = appUser.get().getRoles();
+    public List<VehicleDTO> getAllVehiclesForCurrentUser(){
+        AppUser currentUser = CurrentUserUtil.getCurrentUser();
+        String userType = currentUser.getRoles();
 
         List<Vehicle> allVehicles = new ArrayList<>();
-        //depends on the user type, 
         switch (userType) {
-            //if organization, return all vehicles of the organization
             case "ROLE_ORGANIZATION":
-                logger.error("User Type: " + userType);
-                Organization currentOrganization = orgService.getOrganizationByAppUser(appUser.get());
+                logger.info("User Type: " + userType);
+                Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
                 allVehicles = vehicleRepository.findByOrganizationOrgId(currentOrganization.getOrgId());
             break;
-            //if driver, return the one vehicle assigned to the driver
             case "ROLE_DRIVER":
-                logger.error("User Type: " + userType);
-                Driver currentDriver = driverService.getDriverByAppUser(appUser.get());
+                logger.info("User Type: " + userType);
+                Driver currentDriver = driverService.getDriverByAppUser(currentUser);
                 //TODO check if the driver has a vehicle assigned in the mappings table (to be created) then return the vehicle
             break;
-            //TODO if parent, return all vehicles assigned to the students of this parent
-            //check the students enrollment table in this case
             case "ROLE_PARENT":
-                logger.error("User Type: " + userType);
+            logger.info("User Type: " + userType);
+            //TODO if parent, return all vehicles assigned to the students of this parent
             break;
             default:
                 return null;
         }
 
-        return allVehicles;
+        //map the vehicle entities to DTOs
+        return allVehicles.stream()
+                .map(this::mapFromEntityToDTO)
+                .toList();
     }
 
-    public void addNewVehicle(VehicleDTO vehicleDTO){
+    @Transactional
+    public VehicleDTO addNewVehicle(VehicleDTO vehicleDTO){
         Vehicle vehicleEntity=mapFromDTOToEntity(vehicleDTO);
-        //get the current logged in user
-        Optional<AppUser> appUser = appUserService.getCurrentLoggedInUser();
-        //get the organization of the current logged in user because the vehicle is added ONLY by the organization
-        Organization organization = orgService.getOrganizationByAppUser(appUser.get());
-        //set the organization to the vehicle entity
+
+        AppUser currentUser = CurrentUserUtil.getCurrentUser();
+        Organization organization = orgService.getOrganizationByAppUser(currentUser);
+        
         vehicleEntity.setOrganization(organization);
-        //finally save the vehicle entity
-        vehicleRepository.save(vehicleEntity);
+        Vehicle addedVehicle = vehicleRepository.save(vehicleEntity);
+        return mapFromEntityToDTO(addedVehicle);
     }
 
-    public void updateVehicle(int vehicleID, VehicleDTO vehicleDTO){
-        //TODO check if the vehicleID exists
+    @Transactional
+    public VehicleDTO updateVehicle(int vehicleID, VehicleDTO vehicleDTO){
+        Vehicle vehicleEntity = vehicleRepository.findById(vehicleID)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + vehicleID));
+
+        Organization organization = vehicleEntity.getOrganization();
+
+        AppUser currentUser = CurrentUserUtil.getCurrentUser();
+        Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
+
+        if(!organization.getOrgId().equals(currentOrganization.getOrgId())) {
+            throw new IllegalVehicleAccessException("Vehicle does not belong to the current organization");
+        }
+
+        vehicleEntity.setCapacity(vehicleDTO.getCapacity());
+        vehicleEntity.setVehicleNumber(vehicleDTO.getVehicleNumber());
+        vehicleEntity.setVehicleRegistrationNumber(vehicleDTO.getVehicleRegistrationNumber());
+        vehicleEntity.setVehicleType(vehicleDTO.getVehicleType());
+
+        Vehicle updatedVehicle = vehicleRepository.save(vehicleEntity); 
+        return mapFromEntityToDTO(updatedVehicle);
+    }
+
+    @Transactional
+    public void deleteVehicle(int vehicleID) {
+        Vehicle vehicleEntity = vehicleRepository.findById(vehicleID)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + vehicleID));
+        
+        AppUser currentUser = CurrentUserUtil.getCurrentUser();
+        Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
+
+        if(vehicleEntity.getOrganization().getOrgId() != currentOrganization.getOrgId()) {
+            throw new IllegalVehicleAccessException("Vehicle does not belong to the current organization");
+        }
+        vehicleRepository.delete(vehicleEntity);
     }
 
     private Vehicle mapFromDTOToEntity(VehicleDTO vehicleDTO){
@@ -90,4 +121,5 @@ public class VehicleService {
     private VehicleDTO mapFromEntityToDTO(Vehicle vehicleEntity){
         return modelMapper.map(vehicleEntity, VehicleDTO.class);
     }
+
 }
