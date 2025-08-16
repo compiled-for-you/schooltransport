@@ -14,11 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vbcodes.schooltransport.configuration.CustomAppUser;
 import com.vbcodes.schooltransport.dto.LoginRequestDTO;
 import com.vbcodes.schooltransport.jwt.JWTUtils;
 import com.vbcodes.schooltransport.service.AppUserService;
@@ -53,11 +54,11 @@ public class LoginController {
 
         //if login is successful, and there is populated authentication object
         SecurityContextHolder.getContext().setAuthentication(auth);
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        String jwtToken = jwtUtils.generateJWTFromUsername(userDetails);
+        CustomAppUser customAppUser = (CustomAppUser) auth.getPrincipal();
+        String jwtToken = jwtUtils.generateJWTFromUsername(customAppUser);
         List<String> roles = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(userDetails.getUsername(), jwtToken, "Login Successful !", roles);
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(customAppUser.getUsername(), jwtToken, "Login Successful !", roles);
         return new ResponseEntity<Object>(loginResponseDTO, HttpStatus.OK);
     }
 }
