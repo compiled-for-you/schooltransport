@@ -15,12 +15,12 @@ import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.service.AppUserService;
 
 @Service
-public class ProjectUserDetailsManager implements UserDetailsService{
+public class ProjectUserDetailsService implements UserDetailsService{
 
     private AppUserService appUserService;
 
     @Autowired
-    public ProjectUserDetailsManager(AppUserService appUserService) {
+    public ProjectUserDetailsService(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 

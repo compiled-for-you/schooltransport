@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.vbcodes.schooltransport.configuration.ProjectUserDetailsManager;
+import com.vbcodes.schooltransport.configuration.ProjectUserDetailsService;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class CustomJWTFilter extends OncePerRequestFilter {
     private JWTUtils jwtUtils;
 
     @Autowired
-    private ProjectUserDetailsManager projectUserDetailsManager;
+    private ProjectUserDetailsService projectUserDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomJWTFilter.class);
 
@@ -46,7 +46,7 @@ public class CustomJWTFilter extends OncePerRequestFilter {
 
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUsernameFromJWT(jwt);
-                UserDetails userDetails = projectUserDetailsManager.loadUserByUsername(username);
+                UserDetails userDetails = projectUserDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails,
                                 null,
