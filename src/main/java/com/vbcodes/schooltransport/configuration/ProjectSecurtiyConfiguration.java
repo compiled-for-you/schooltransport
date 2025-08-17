@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,6 +35,8 @@ public class ProjectSecurtiyConfiguration {
         http
             .cors(Customizer.withDefaults())
             .csrf(c -> c.disable())
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**")).permitAll() // Allow pre-flight requests, necessary when we add Authorization header from the client for JWT
                     .requestMatchers(mvc.pattern("/getData")).permitAll()

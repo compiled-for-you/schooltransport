@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +21,24 @@ import com.vbcodes.schooltransport.entity.Student;
 import com.vbcodes.schooltransport.exception.customexceptions.IllegalResourceAccessException;
 import com.vbcodes.schooltransport.exception.customexceptions.ResourceNotFoundException;
 import com.vbcodes.schooltransport.repository.StudentRepository;
+import com.vbcodes.schooltransport.responses.ErrorResponse;
+import com.vbcodes.schooltransport.responses.SuccessResponse;
 import com.vbcodes.schooltransport.utils.CurrentUserUtil;
 
 @Service
 public class StudentService {
     private StudentRepository studentRepository;
+    private OrgService orgService;
+    private ParentService parentService;
+    private AppUserService appUserService;
     private ModelMapper modelMapper;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, ModelMapper modelMapper){
+    public StudentService(StudentRepository studentRepository, OrgService orgService, ParentService parentService, AppUserService appUserService, ModelMapper modelMapper){
         this.studentRepository=studentRepository;
+        this.orgService=orgService;
+        this.parentService=parentService;
+        this.appUserService=appUserService;
         this.modelMapper=modelMapper;
     }
 
@@ -66,11 +76,20 @@ public class StudentService {
         return studentRepository.findByGrade(grade);
     }
 
-    public void saveNewStudent(StudentParentFormDTO studentParentFormDTO, Organization orgEntity, Parent parentEntity, AppUser appUser){
+    @Transactional
+    public void saveNewStudent(StudentParentFormDTO studentParentFormDTO){
+        Organization orgEntity=orgService.getOrganizationById(studentParentFormDTO.getOrgId()).orElseThrow(() -> new ResourceNotFoundException("No Organization found with Org ID " + studentParentFormDTO.getOrgId()));
+
+        AppUser studentAppUser = appUserService.saveAppUser(studentParentFormDTO);
+        //TODO if user is not null and saved properly - 
+        Parent parentEntity = parentService.saveNewParent(studentParentFormDTO, studentAppUser);
+        //TODO if parent is saved properly and is not null - 
+
         Student studentEntity = mapFromDTOToEntity(studentParentFormDTO);
         studentEntity.setOrganization(orgEntity);
         studentEntity.setParent(parentEntity);
-        studentEntity.setAppUser(appUser);
+        studentEntity.setAppUser(studentAppUser);
+
         studentRepository.save(studentEntity);
     }
 

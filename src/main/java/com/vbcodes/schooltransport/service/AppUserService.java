@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vbcodes.schooltransport.dto.AppUserDTO;
 import com.vbcodes.schooltransport.entity.AppUser;
+import com.vbcodes.schooltransport.exception.customexceptions.DuplicateUsernameException;
 import com.vbcodes.schooltransport.repository.AppUserRepository;
 
 @Service
@@ -48,6 +50,9 @@ public class AppUserService {
     }
 
     public AppUser saveAppUser(AppUserDTO appUserDTO){
+        if (appUserRepository.existsByUsername(appUserDTO.getUsername())) {
+            throw new DuplicateUsernameException("Username already exists: " + appUserDTO.getUsername());
+        }
         AppUser appUser=new AppUser(appUserDTO.getUsername(), passwordEncoder.encode(appUserDTO.getPassword()), appUserDTO.getRoles());
         return appUserRepository.save(appUser);
     }

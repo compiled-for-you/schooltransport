@@ -12,4 +12,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Integer>{
 
     @Query(value="select user_id from app_users where username=?1", nativeQuery=true)
     Integer findUserIdByUsername(String username);
+
+    boolean existsByUsername(String username);
 }

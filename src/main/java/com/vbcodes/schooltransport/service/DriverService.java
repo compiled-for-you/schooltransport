@@ -7,11 +7,13 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vbcodes.schooltransport.dto.DriverDTO;
 import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Driver;
 import com.vbcodes.schooltransport.entity.Organization;
+import com.vbcodes.schooltransport.exception.customexceptions.ResourceNotFoundException;
 import com.vbcodes.schooltransport.repository.DriverRepository;
 import com.vbcodes.schooltransport.utils.CurrentUserUtil;
 
@@ -59,11 +61,17 @@ public class DriverService {
                 .toList();
     }
 
-    public void saveNewDriver(DriverDTO driverDTO, Organization organizationEntity, AppUser driverAppUser) {
+    @Transactional
+    public void saveNewDriver(DriverDTO driverDTO) {
+        Organization orgEntity=orgService.getOrganizationById(driverDTO.getOrgId()).orElseThrow(() -> new ResourceNotFoundException("No organization found with Org ID " + driverDTO.getOrgId()));
+       
+        AppUser driverAppUser = appUserService.saveAppUser(driverDTO);
+
         Driver driverEntity = mapFromDTOToEntity(driverDTO);
-        System.out.println(driverAppUser);
-        driverEntity.setOrganization(organizationEntity);
+
+        driverEntity.setOrganization(orgEntity);
         driverEntity.setAppUser(driverAppUser);
+
         driverRepository.save(driverEntity);
     }
 

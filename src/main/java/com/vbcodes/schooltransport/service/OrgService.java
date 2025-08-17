@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vbcodes.schooltransport.dto.OrganizationDTO;
 import com.vbcodes.schooltransport.entity.AppUser;
@@ -46,8 +47,13 @@ public class OrgService {
         return orgRepository.findOrganizationByAppUser(appUser);
     }
     
-    public void saveNewOrganization(OrganizationDTO orgDTO, AppUser orgAppUser){
+    @Transactional
+    public void saveNewOrganization(OrganizationDTO orgDTO){
+
+        AppUser orgAppUser = appUserService.saveAppUser(orgDTO);
+
         Organization orgEntity = mapFromDTOToEntity(orgDTO);
+
         orgEntity.setAppUser(orgAppUser);
         orgRepository.save(orgEntity);
     }
