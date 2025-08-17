@@ -1,24 +1,15 @@
 package com.vbcodes.schooltransport.dto;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class AppUserDTO {
+
     protected String username;
+    @ToString.Exclude
     protected String password;
     protected String roles;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    @Override
-    public String toString() {
-        return "AppUserDTO [username=" + username + ", password=" + password + ", roles=" + roles + "]";
-    }
 }

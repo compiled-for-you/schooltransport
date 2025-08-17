@@ -1,5 +1,7 @@
 package com.vbcodes.schooltransport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -27,7 +29,8 @@ public class Organization {
     @Column(name = "org_type", nullable = false)
     private OrgType orgType;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore //TODO remove and return OrganizationResponseDTO instead 
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
 

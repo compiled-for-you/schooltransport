@@ -1,6 +1,7 @@
 package com.vbcodes.schooltransport.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -13,8 +14,8 @@ import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Driver;
 import com.vbcodes.schooltransport.entity.Organization;
 import com.vbcodes.schooltransport.entity.Vehicle;
-import com.vbcodes.schooltransport.exception.customexceptions.IllegalVehicleAccessException;
-import com.vbcodes.schooltransport.exception.customexceptions.VehicleNotFoundException;
+import com.vbcodes.schooltransport.exception.customexceptions.IllegalResourceAccessException;
+import com.vbcodes.schooltransport.exception.customexceptions.ResourceNotFoundException;
 import com.vbcodes.schooltransport.repository.VehicleRepository;
 import com.vbcodes.schooltransport.utils.CurrentUserUtil;
 
@@ -43,8 +44,8 @@ public class VehicleService {
         switch (userType) {
             case "ROLE_ORGANIZATION":
                 logger.info("User Type: " + userType);
-                Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
-                allVehicles = vehicleRepository.findByOrganizationOrgId(currentOrganization.getOrgId());
+                // Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
+                allVehicles = vehicleRepository.findByOrganizationAppUser(currentUser);
             break;
             case "ROLE_DRIVER":
                 logger.info("User Type: " + userType);
@@ -56,7 +57,7 @@ public class VehicleService {
             //TODO if parent, return all vehicles assigned to the students of this parent
             break;
             default:
-                return null;
+                return Collections.emptyList();
         }
 
         //map the vehicle entities to DTOs
@@ -80,7 +81,7 @@ public class VehicleService {
     @Transactional
     public VehicleDTO updateVehicle(int vehicleID, VehicleDTO vehicleDTO){
         Vehicle vehicleEntity = vehicleRepository.findById(vehicleID)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + vehicleID));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + vehicleID));
 
         Organization organization = vehicleEntity.getOrganization();
 
@@ -88,7 +89,7 @@ public class VehicleService {
         Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
 
         if(!organization.getOrgId().equals(currentOrganization.getOrgId())) {
-            throw new IllegalVehicleAccessException("Vehicle does not belong to the current organization");
+            throw new IllegalResourceAccessException("Vehicle does not belong to the current organization");
         }
 
         vehicleEntity.setCapacity(vehicleDTO.getCapacity());
@@ -103,13 +104,13 @@ public class VehicleService {
     @Transactional
     public void deleteVehicle(int vehicleID) {
         Vehicle vehicleEntity = vehicleRepository.findById(vehicleID)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with ID: " + vehicleID));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + vehicleID));
         
         AppUser currentUser = CurrentUserUtil.getCurrentUser();
         Organization currentOrganization = orgService.getOrganizationByAppUser(currentUser);
 
         if(vehicleEntity.getOrganization().getOrgId() != currentOrganization.getOrgId()) {
-            throw new IllegalVehicleAccessException("Vehicle does not belong to the current organization");
+            throw new IllegalResourceAccessException("Vehicle does not belong to the current organization");
         }
         vehicleRepository.delete(vehicleEntity);
     }

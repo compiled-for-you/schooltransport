@@ -36,7 +36,7 @@ public class Vehicle {
     @Column(nullable = false)
     private int capacity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "organization_id", referencedColumnName = "org_id") 
     private Organization organization;

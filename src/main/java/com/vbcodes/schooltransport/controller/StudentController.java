@@ -3,49 +3,40 @@ package com.vbcodes.schooltransport.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vbcodes.schooltransport.entity.Organization;
-import com.vbcodes.schooltransport.entity.Student;
-import com.vbcodes.schooltransport.service.OrgService;
+import com.vbcodes.schooltransport.dto.StudentDTO;
 import com.vbcodes.schooltransport.service.StudentService;
 
 @RestController
+@RequestMapping("/students")
 public class StudentController {
     private StudentService studentService;
-    private OrgService orgService;
 
     @Autowired
-    public StudentController(StudentService studentService, OrgService orgService){
+    public StudentController(StudentService studentService){
         this.studentService = studentService;
-        this.orgService = orgService;
     }
 
-    @GetMapping("/students")
-    public List<Student> getAllStudents(){
-        return studentService.getAllStudents();
+    @GetMapping
+    public ResponseEntity<?> getAllStudents(){
+        List<StudentDTO> students = studentService.getAllStudentsForCurrentUser();
+        return ResponseEntity.status(HttpStatus.OK).body(students);
     }
 
-    @GetMapping("/organization/students")
-    public List<Student> getAllStudentsFromOrganization(Authentication auth){
-        Organization currentOrganization = orgService.getCurrentLoggedInOrganization(auth);
-        System.out.println(currentOrganization);
-        if(currentOrganization==null)
-            return null;
-        else
-            return studentService.getAllStudentsFromOrganization(currentOrganization.getOrgId());
+    @PutMapping("/{studentId}")
+    public ResponseEntity<?> updateStudent(@PathVariable int studentId, @RequestBody StudentDTO studentDTO){
+        StudentDTO updatedStudent = studentService.updateStudent(studentId, studentDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);
     }
 
-    @GetMapping("student/name/{studentName}")
-    public Student getStudentByName(@PathVariable String studentName){
-        return studentService.getStudentByName(studentName);
-    }
+    
 
-    @GetMapping("students/grade/{grade}")
-    public List<Student> getStudentsByGrade(@PathVariable int grade){
-        return studentService.getStudentsByGrade(grade);
-    }
 }
