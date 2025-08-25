@@ -12,10 +12,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "drivers")
 public class Driver {
@@ -23,6 +27,7 @@ public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "driver_id")
+    
     private int driverId;
 
     @Column(name = "full_name", nullable = false, length = 100)
@@ -48,5 +53,9 @@ public class Driver {
     @JsonIgnore
     @ToString.Exclude
     private Organization organization;
+
+    public Driver(int driverId){
+        this.driverId=driverId;
+    }
 
 }

@@ -14,4 +14,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer>{
     List<Vehicle> findByOrganizationOrgId(int orgId);
 
     List<Vehicle> findByOrganizationAppUser(AppUser appUser);
+
+    boolean existsByVehicleIdAndOrganization_OrgId(Integer vehicleID, Integer organizationID);
 }

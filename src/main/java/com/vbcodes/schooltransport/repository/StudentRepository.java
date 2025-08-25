@@ -24,4 +24,6 @@ public interface StudentRepository extends JpaRepository<Student, Integer>{
     Student findByAppUser(AppUser appUser);
 
     List<Student> findByGrade(int grade);
+
+    boolean existsByStudentIdAndOrganization_OrgId(Integer studentID, Integer orgID);
 }

@@ -1,14 +1,11 @@
 package com.vbcodes.schooltransport.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +18,6 @@ import com.vbcodes.schooltransport.entity.Student;
 import com.vbcodes.schooltransport.exception.customexceptions.IllegalResourceAccessException;
 import com.vbcodes.schooltransport.exception.customexceptions.ResourceNotFoundException;
 import com.vbcodes.schooltransport.repository.StudentRepository;
-import com.vbcodes.schooltransport.responses.ErrorResponse;
-import com.vbcodes.schooltransport.responses.SuccessResponse;
 import com.vbcodes.schooltransport.utils.CurrentUserUtil;
 
 @Service

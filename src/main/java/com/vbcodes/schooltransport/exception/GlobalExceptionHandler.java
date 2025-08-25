@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.vbcodes.schooltransport.exception.customexceptions.AnonymousUserException;
 import com.vbcodes.schooltransport.exception.customexceptions.IllegalResourceAccessException;
 import com.vbcodes.schooltransport.exception.customexceptions.ResourceNotFoundException;
+import com.vbcodes.schooltransport.exception.customexceptions.UnsupportedMappingOperationException;
 import com.vbcodes.schooltransport.responses.ErrorResponse;
 
 @RestControllerAdvice
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalVehicleAccessException(IllegalResourceAccessException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UnsupportedMappingOperationException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedMappingOperationException(UnsupportedMappingOperationException ex){
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AnonymousUserException.class)

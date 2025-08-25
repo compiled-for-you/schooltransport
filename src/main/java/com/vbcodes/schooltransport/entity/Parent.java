@@ -8,7 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "parents")
 public class Parent {
@@ -31,50 +33,4 @@ public class Parent {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", updatable = false)
     private AppUser appUser;
 
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getParentName() {
-        return parentName;
-    }
-
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public void setAppUser(AppUser appUser){
-        this.appUser=appUser;
-    }
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    @Override
-    public String toString() {
-        return "Parent [parentId=" + parentId + ", parentName=" + parentName + ", email=" + email + ", contact="
-                + contact + "]";
-    }
-
-    
 }
