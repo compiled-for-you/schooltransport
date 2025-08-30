@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Student;
+import com.vbcodes.schooltransport.projection.StudentCardProjection;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer>{
@@ -26,4 +27,21 @@ public interface StudentRepository extends JpaRepository<Student, Integer>{
     List<Student> findByGrade(int grade);
 
     boolean existsByStudentIdAndOrganization_OrgId(Integer studentID, Integer orgID);
+
+    @Query(value = """
+        SELECT 
+            COUNT(*) AS totalStudents,
+            SUM(
+                CASE WHEN EXISTS(
+                    SELECT 1
+                    FROM student_vehicle_mappings svm
+                    WHERE svm.student_id=s.student_id 
+                    AND svm.is_active = 1
+                )
+                THEN 0 ELSE 1 END
+            ) AS unmappedStudents
+        FROM students s
+        WHERE s.organization_id = :orgId
+    """, nativeQuery = true)
+    StudentCardProjection getStudentCardDetailsForOrganization(Integer orgId);
 }
