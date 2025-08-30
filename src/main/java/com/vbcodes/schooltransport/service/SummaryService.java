@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.vbcodes.schooltransport.dto.card_dto.BaseCardDTO;
 import com.vbcodes.schooltransport.dto.card_dto.DriverCardDTO;
 import com.vbcodes.schooltransport.dto.card_dto.MappingCardDTO;
+import com.vbcodes.schooltransport.dto.card_dto.MyDriverCardDTO;
 import com.vbcodes.schooltransport.dto.card_dto.MyOrganizationCardDTO;
 import com.vbcodes.schooltransport.dto.card_dto.MyVehicleCardDTO;
 import com.vbcodes.schooltransport.dto.card_dto.StudentCardDTO;
@@ -16,7 +17,9 @@ import com.vbcodes.schooltransport.dto.card_dto.VehicleCardDTO;
 import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Driver;
 import com.vbcodes.schooltransport.entity.Organization;
+import com.vbcodes.schooltransport.entity.Student;
 import com.vbcodes.schooltransport.projection.DriverCardProjection;
+import com.vbcodes.schooltransport.projection.MyDriverProjection;
 import com.vbcodes.schooltransport.projection.MyVehicleProjection;
 import com.vbcodes.schooltransport.projection.StudentCardProjection;
 import com.vbcodes.schooltransport.projection.VehicleCardProjection;
@@ -87,7 +90,18 @@ public class SummaryService {
                 
             break;
             case "ROLE_PARENT":
-                
+                Student currentStudent = studentRepository.findByAppUser(currentAppUser);
+
+                MyVehicleProjection myVehicleProjection2 = svmRepository.getVehicleCardDetailsForStudent(currentStudent.getStudentId());
+                MyVehicleCardDTO mvCardDTO2 = new MyVehicleCardDTO(myVehicleProjection2.getVehicleRegistrationNumber(), myVehicleProjection2.getVehicleNumber(), myVehicleProjection2.getVehicleType());
+                summaryCardsList.add(mvCardDTO2);
+
+                MyOrganizationCardDTO moCardDTO2 = new MyOrganizationCardDTO(currentStudent.getOrganization().getOrgName(), currentStudent.getOrganization().getOrgId(), currentStudent.getOrganization().getContactNumber());
+                summaryCardsList.add(moCardDTO2);
+
+                MyDriverProjection myDriverCardProjection = svmRepository.findDriverCardDetailsForStudent(currentStudent.getStudentId());
+                MyDriverCardDTO myDriverCardDTO = new MyDriverCardDTO(myDriverCardProjection.getDriverName(),myDriverCardProjection.getDriverContactNumber());
+                summaryCardsList.add(myDriverCardDTO);
             break;
             default:
             break;

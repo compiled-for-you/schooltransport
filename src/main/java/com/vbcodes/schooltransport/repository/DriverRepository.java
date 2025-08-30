@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.vbcodes.schooltransport.entity.AppUser;
 import com.vbcodes.schooltransport.entity.Driver;
 import com.vbcodes.schooltransport.projection.DriverCardProjection;
-import com.vbcodes.schooltransport.projection.MyOrganizationProjection;
 
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Integer> {
