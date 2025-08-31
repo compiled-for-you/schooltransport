@@ -51,10 +51,12 @@ public class VehicleService {
                 logger.info("User Type: " + userType);
                 Driver currentDriver = driverService.getDriverByAppUser(currentUser);
                 //TODO check if the driver has a vehicle assigned in the mappings table (to be created) then return the vehicle
+                //TODO should return the current mapped view of the specific vehicle
             break;
             case "ROLE_PARENT":
-            logger.info("User Type: " + userType);
-            //TODO if parent, return all vehicles assigned to the students of this parent
+                logger.info("User Type: " + userType);
+                //TODO if parent, return all vehicles assigned to the students of this parent
+                //TODO should return the current mapped view of the specific vehicle
             break;
             default:
                 return Collections.emptyList();
